@@ -83,11 +83,24 @@ export default function TaxForm() {
           submissionDate: new Date().toISOString(),
         };
 
-        // Store in localStorage (in a real app, this would be sent to a database)
-        const existingData = localStorage.getItem("taxSubmissions");
-        const submissions = existingData ? JSON.parse(existingData) : [];
-        submissions.push(submissionData);
-        localStorage.setItem("taxSubmissions", JSON.stringify(submissions));
+        // Store in MongoDB
+        const response = fetch("http://localhost:5000/api/submission", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          
+          body: JSON.stringify({
+            taxType: values.taxType,
+            taxAmount: values.taxAmount,
+          }),
+        })
+        
+        if (!response.ok) {
+          throw new Error("Gagal mengirim data")
+        }
+        
+        const data = response.json()
 
         // Show success toast
         toast.success("Pengajuan Berhasil", {
