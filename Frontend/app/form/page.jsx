@@ -123,20 +123,19 @@ export default function TaxForm() {
   // Handle form submission
   async function onSubmit(values) {
     setIsSubmitting(true);
-
+    console.log("Values yang dikirim:", values);
     try {
       const response = await fetch("http://localhost:5000/api/submission", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          
-          body: JSON.stringify({
-            taxType: values.taxType,
-            taxAmount: values.taxAmount,
-          }),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-        })
+        body: JSON.stringify({
+          taxType: values.taxType,
+          taxAmount: values.taxAmount,
+        }),
+      });
 
       console.log("Values yang dikirim:", response.body);
 
@@ -165,7 +164,6 @@ export default function TaxForm() {
       setIsSubmitting(false);
     }
   }
-
 
   return (
     <div className="container py-10">
