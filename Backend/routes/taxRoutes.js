@@ -4,9 +4,9 @@ const TaxForm = require("../models/taxModels");
 
 // POST /api/submission
 router.post("/", async (req, res) => {
-    const { tax_type, amount } = req.body;
+    const { tax_type, taxAmount } = req.body;
   
-    if (!tax_type || !amount || amount <= 0) {
+    if (!tax_type || !taxAmount || taxAmount <= 0) {
       return res.status(400).json({ error: "Jumlah pajak harus angka positif" });
     }
   
@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
       const taxForm = await TaxForm.create({
         reference_number,
         tax_type,
-        amount,
+        taxAmount,
         submitted_at: new Date()
       });
   

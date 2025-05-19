@@ -64,7 +64,7 @@ export default function TaxForm() {
   });
 
   // Handle form submission
-  function onSubmit(values) {
+  /*function onSubmit(values) {
     setIsSubmitting(true);
 
     // Simulate network delay
@@ -118,7 +118,54 @@ export default function TaxForm() {
         setIsSubmitting(false);
       }
     }, 1000);
+  }*/
+
+  // Handle form submission
+  async function onSubmit(values) {
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/submission", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          
+          body: JSON.stringify({
+            taxType: values.taxType,
+            taxAmount: values.taxAmount,
+          }),
+
+        })
+
+      console.log("Values yang dikirim:", response.body);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Server error response:", errorData);
+        throw new Error(errorData.error || "Gagal mengirim data");
+      }
+
+      const data = await response.json();
+      console.log("Response from server:", data);
+
+      toast.success("Pengajuan Berhasil", {
+        description: `Nomor referensi: ${data.reference_number}`,
+        duration: 5000,
+      });
+
+      router.push(`/confirmation?ref=${data.reference_number}`);
+    } catch (error) {
+      console.error("Error saat submit:", error);
+      toast.error("Terjadi Kesalahan", {
+        description: "Gagal menyimpan data pengajuan. Silakan coba lagi.",
+        duration: 5000,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
+
 
   return (
     <div className="container py-10">
