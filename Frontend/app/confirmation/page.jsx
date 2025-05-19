@@ -1,61 +1,109 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { formatCurrency } from "@/lib/utils"
-import { ArrowLeft, CheckCircle2, Printer, Receipt, XCircle } from "lucide-react"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Badge } from "@/components/ui/badge"
-import { toast } from "sonner"
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { formatCurrency } from "@/lib/utils";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Printer,
+  Receipt,
+  XCircle,
+} from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { sub } from "date-fns";
 
 export default function ConfirmationPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const refNumber = searchParams.get("ref")
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const refNumber = searchParams.get("ref");
 
-  const [submission, setSubmission] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [submission, setSubmission] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+  //   // Simulate network delay
+  //   const timer = setTimeout(() => {
+  //     // Get submission data from localStorage
+  //     const existingData = localStorage.getItem("taxSubmissions")
+  //     if (existingData) {
+  //       const submissions = JSON.parse(existingData)
+  //       const found = submissions.find((s) => s.referenceNumber === refNumber)
+  //       if (found) {
+  //         setSubmission(found)
+  //       } else {
+  //         toast.error("Data tidak ditemukan", {
+  //           description: "Nomor referensi tidak valid atau data pengajuan tidak ditemukan.",
+  //         })
+  //       }
+  //     } else {
+  //       toast.error("Data tidak ditemukan", {
+  //         description: "Tidak ada data pengajuan yang tersimpan.",
+  //       })
+  //     }
+  //     setLoading(false)
+  //   }, 800)
+
+  //   return () => clearTimeout(timer)
+  // }, [refNumber])
 
   useEffect(() => {
-    // Simulate network delay
-    const timer = setTimeout(() => {
-      // Get submission data from localStorage
-      const existingData = localStorage.getItem("taxSubmissions")
-      if (existingData) {
-        const submissions = JSON.parse(existingData)
-        const found = submissions.find((s) => s.referenceNumber === refNumber)
-        if (found) {
-          setSubmission(found)
-        } else {
-          toast.error("Data tidak ditemukan", {
-            description: "Nomor referensi tidak valid atau data pengajuan tidak ditemukan.",
-          })
-        }
-      } else {
-        toast.error("Data tidak ditemukan", {
-          description: "Tidak ada data pengajuan yang tersimpan.",
-        })
-      }
-      setLoading(false)
-    }, 800)
+    const fetchSubmission = async () => {
+      try {
+        setLoading(true);
 
-    return () => clearTimeout(timer)
-  }, [refNumber])
+        const response = await fetch(
+          `http://localhost:5000/api/submission/${refNumber}`
+        );
+        console.log(refNumber);
+        if (!response.ok) {
+          throw new Error("Submission not found");
+        }
+
+        const data = await response.json();
+        setSubmission(data); // asumsi response sudah dalam format JSON submission
+        console.log(data);
+      } catch (error) {
+        toast.error("Data tidak ditemukan", {
+          description:
+            "Nomor referensi tidak valid atau data pengajuan tidak ditemukan.",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Simulasi delay seperti sebelumnya
+    const timer = setTimeout(() => {
+      fetchSubmission();
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [refNumber]);
 
   const handleBackClick = () => {
-    router.push("/")
-  }
+    router.push("/");
+  };
 
   const handlePrint = () => {
     toast.info("Mencetak bukti pengajuan...", {
       description: "Halaman cetak akan terbuka dalam beberapa saat.",
-    })
+    });
     setTimeout(() => {
-      window.print()
-    }, 500)
-  }
+      window.print();
+    }, 500);
+  };
 
   return (
     <div className="container py-10">
@@ -119,17 +167,22 @@ export default function ConfirmationPage() {
                   Bukti Pengajuan Pajak
                 </CardTitle>
                 <Badge variant="outline" className="print:hidden">
-                  {submission.referenceNumber}
+                  {submission.reference_number}
                 </Badge>
               </div>
-              <CardDescription>Simpan nomor referensi ini untuk pengecekan status di kemudian hari.</CardDescription>
+              <CardDescription>
+                Simpan nomor referensi ini untuk pengecekan status di kemudian
+                hari.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="rounded-lg border bg-muted/50 p-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">Nomor Referensi</p>
-                    <p className="font-medium">{submission.referenceNumber}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Nomor Referensi
+                    </p>
+                    <p className="font-medium">{submission.reference_number}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Status</p>
@@ -139,22 +192,31 @@ export default function ConfirmationPage() {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Jenis Pajak</p>
-                    <p className="font-medium">{submission.taxType}</p>
+                    <p className="font-medium">{submission.tax_type}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Jumlah Pajak</p>
-                    <p className="font-medium">{formatCurrency(submission.taxAmount)}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Jumlah Pajak
+                    </p>
+                    <p className="font-medium">
+                      {formatCurrency(submission.taxAmount)}
+                    </p>
                   </div>
                   <div className="col-span-2">
-                    <p className="text-sm text-muted-foreground">Tanggal Pengajuan</p>
+                    <p className="text-sm text-muted-foreground">
+                      Tanggal Pengajuan
+                    </p>
                     <p className="font-medium">
-                      {new Date(submission.submissionDate).toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {new Date(submission.submitted_at).toLocaleDateString(
+                        "id-ID",
+                        {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }
+                      )}
                     </p>
                   </div>
                 </div>
@@ -164,21 +226,30 @@ export default function ConfirmationPage() {
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="mt-0.5 h-5 w-5 text-green-600 dark:text-green-500" />
                   <div>
-                    <h4 className="font-medium text-green-800 dark:text-green-400">Pengajuan Berhasil</h4>
+                    <h4 className="font-medium text-green-800 dark:text-green-400">
+                      Pengajuan Berhasil
+                    </h4>
                     <p className="text-sm text-green-700 dark:text-green-500">
-                      Pengajuan pajak Anda telah berhasil diproses. Silakan lakukan pembayaran sesuai dengan jumlah yang
-                      tertera.
+                      Pengajuan pajak Anda telah berhasil diproses. Silakan
+                      lakukan pembayaran sesuai dengan jumlah yang tertera.
                     </p>
                   </div>
                 </div>
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-3 sm:flex-row sm:justify-between">
-              <Button variant="outline" onClick={handleBackClick} className="w-full sm:w-auto">
+              <Button
+                variant="outline"
+                onClick={handleBackClick}
+                className="w-full sm:w-auto"
+              >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Kembali
               </Button>
-              <Button onClick={handlePrint} className="w-full sm:w-auto print:hidden">
+              <Button
+                onClick={handlePrint}
+                className="w-full sm:w-auto print:hidden"
+              >
                 <Printer className="mr-2 h-4 w-4" />
                 Cetak Bukti
               </Button>
@@ -188,12 +259,15 @@ export default function ConfirmationPage() {
           <Card>
             <CardHeader>
               <CardTitle>Data Tidak Ditemukan</CardTitle>
-              <CardDescription>Nomor referensi tidak valid atau data pengajuan tidak ditemukan.</CardDescription>
+              <CardDescription>
+                Nomor referensi tidak valid atau data pengajuan tidak ditemukan.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Pastikan Anda memasukkan nomor referensi yang benar. Jika Anda yakin nomor referensi sudah benar,
-                silakan hubungi layanan pelanggan kami.
+                Pastikan Anda memasukkan nomor referensi yang benar. Jika Anda
+                yakin nomor referensi sudah benar, silakan hubungi layanan
+                pelanggan kami.
               </p>
             </CardContent>
             <CardFooter>
@@ -206,5 +280,5 @@ export default function ConfirmationPage() {
         )}
       </div>
     </div>
-  )
+  );
 }
