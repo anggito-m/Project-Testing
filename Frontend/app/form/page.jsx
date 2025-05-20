@@ -1,4 +1,5 @@
 "use client";
+import React from "react"; // Add this at the top
 
 import { useRouter } from "next/navigation";
 import { z } from "zod";
@@ -8,7 +9,7 @@ import { useState } from "react";
 import { ArrowRight, Receipt, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import {
   Form,
   FormControl,
@@ -59,7 +60,7 @@ export default function TaxForm() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      taxAmount: undefined,
+      taxAmount: "",
     },
   });
 
@@ -232,13 +233,14 @@ export default function TaxForm() {
                   name="taxAmount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Jumlah Pajak</FormLabel>
+                      <FormLabel htmlFor="tax-amount">Jumlah Pajak</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                             Rp
                           </span>
                           <Input
+                            id="tax-amount"
                             type="number"
                             className="pl-9"
                             placeholder="0"
@@ -278,6 +280,7 @@ export default function TaxForm() {
                   <Button
                     type="submit"
                     className="w-full sm:w-auto"
+                    data-testid="submit-button"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (

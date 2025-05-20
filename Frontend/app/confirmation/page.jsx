@@ -1,8 +1,8 @@
 "use client";
-
+import React from "react"; // Add this at the top
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button.jsx";
 import {
   Card,
   CardContent,
@@ -66,14 +66,14 @@ export default function ConfirmationPage() {
         const response = await fetch(
           `http://localhost:5000/api/submission/${refNumber}`
         );
-        console.log(refNumber);
+        // console.log(refNumber);
         if (!response.ok) {
           throw new Error("Submission not found");
         }
 
         const data = await response.json();
         setSubmission(data); // asumsi response sudah dalam format JSON submission
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         toast.error("Data tidak ditemukan", {
           description:
@@ -125,7 +125,7 @@ export default function ConfirmationPage() {
               "Data Tidak Ditemukan"
             )}
           </h1>
-          <p className="text-muted-foreground">
+          <div className="text-muted-foreground">
             {loading ? (
               <Skeleton className="mx-auto h-5 w-72" />
             ) : submission ? (
@@ -133,7 +133,7 @@ export default function ConfirmationPage() {
             ) : (
               "Nomor referensi tidak valid atau data pengajuan tidak ditemukan."
             )}
-          </p>
+          </div>
         </div>
 
         {loading ? (

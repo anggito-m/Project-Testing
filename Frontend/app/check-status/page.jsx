@@ -1,68 +1,85 @@
-"use client"
-
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { formatCurrency } from "@/lib/utils"
-import Link from "next/link"
-import { ArrowLeft, ArrowRight, Loader2, Receipt, Search, XCircle } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { toast } from "sonner"
+"use client";
+import React from "react"; // Add this at the top
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { formatCurrency } from "@/lib/utils";
+import Link from "next/link";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Loader2,
+  Receipt,
+  Search,
+  XCircle,
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { toast } from "sonner";
 
 export default function CheckStatusPage() {
-  const [referenceNumber, setReferenceNumber] = useState("")
-  const [submission, setSubmission] = useState(null)
-  const [searched, setSearched] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [referenceNumber, setReferenceNumber] = useState("");
+  const [submission, setSubmission] = useState(null);
+  const [searched, setSearched] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleCheck = () => {
     if (!referenceNumber.trim()) {
-      setError("Nomor referensi harus diisi")
-      return
+      setError("Nomor referensi harus diisi");
+      return;
     }
 
-    setError("")
-    setLoading(true)
+    setError("");
+    setLoading(true);
 
     // Simulate network delay
     setTimeout(() => {
       // Get submission data from localStorage
-      const existingData = localStorage.getItem("taxSubmissions")
+      const existingData = localStorage.getItem("taxSubmissions");
       if (existingData) {
-        const submissions = JSON.parse(existingData)
-        const found = submissions.find((s) => s.referenceNumber === referenceNumber)
+        const submissions = JSON.parse(existingData);
+        const found = submissions.find(
+          (s) => s.referenceNumber === referenceNumber
+        );
         if (found) {
-          setSubmission(found)
+          setSubmission(found);
           toast.success("Data ditemukan", {
             description: `Pengajuan dengan nomor ${referenceNumber} berhasil ditemukan.`,
-          })
+          });
         } else {
-          setSubmission(null)
+          setSubmission(null);
           toast.error("Data tidak ditemukan", {
-            description: "Nomor referensi tidak valid atau data pengajuan tidak ditemukan.",
-          })
+            description:
+              "Nomor referensi tidak valid atau data pengajuan tidak ditemukan.",
+          });
         }
       } else {
-        setSubmission(null)
+        setSubmission(null);
         toast.error("Data tidak ditemukan", {
           description: "Tidak ada data pengajuan yang tersimpan.",
-        })
+        });
       }
-      setSearched(true)
-      setLoading(false)
-    }, 800)
-  }
+      setSearched(true);
+      setLoading(false);
+    }, 800);
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      e.preventDefault()
-      handleCheck()
+      e.preventDefault();
+      handleCheck();
     }
-  }
+  };
 
   return (
     <div className="container py-10">
@@ -70,13 +87,17 @@ export default function CheckStatusPage() {
         <div className="space-y-2 text-center">
           <Search className="mx-auto h-10 w-10 text-primary" />
           <h1 className="text-3xl font-bold">Cek Status Pengajuan</h1>
-          <p className="text-muted-foreground">Masukkan nomor referensi untuk melihat status pengajuan pajak Anda.</p>
+          <p className="text-muted-foreground">
+            Masukkan nomor referensi untuk melihat status pengajuan pajak Anda.
+          </p>
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle>Masukkan Nomor Referensi</CardTitle>
-            <CardDescription>Nomor referensi dapat ditemukan pada bukti pengajuan pajak Anda.</CardDescription>
+            <CardDescription>
+              Nomor referensi dapat ditemukan pada bukti pengajuan pajak Anda.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -87,14 +108,18 @@ export default function CheckStatusPage() {
                   placeholder="Contoh: TAX2025-001"
                   value={referenceNumber}
                   onChange={(e) => {
-                    setReferenceNumber(e.target.value)
-                    if (error) setError("")
+                    setReferenceNumber(e.target.value);
+                    if (error) setError("");
                   }}
                   onKeyDown={handleKeyDown}
                   className="flex-1"
                 />
                 <Button onClick={handleCheck} disabled={loading}>
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+                  {loading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Search className="h-4 w-4" />
+                  )}
                   <span className="ml-2 hidden sm:inline">Cek</span>
                 </Button>
               </div>
@@ -114,21 +139,35 @@ export default function CheckStatusPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-muted-foreground">Nomor Referensi</p>
-                        <p className="font-medium">{submission.referenceNumber}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Nomor Referensi
+                        </p>
+                        <p className="font-medium">
+                          {submission.referenceNumber}
+                        </p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Jenis Pajak</p>
+                        <p className="text-sm text-muted-foreground">
+                          Jenis Pajak
+                        </p>
                         <p className="font-medium">{submission.taxType}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Jumlah Pajak</p>
-                        <p className="font-medium">{formatCurrency(submission.taxAmount)}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Jumlah Pajak
+                        </p>
+                        <p className="font-medium">
+                          {formatCurrency(submission.taxAmount)}
+                        </p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Tanggal Pengajuan</p>
+                        <p className="text-sm text-muted-foreground">
+                          Tanggal Pengajuan
+                        </p>
                         <p className="font-medium">
-                          {new Date(submission.submissionDate).toLocaleDateString("id-ID", {
+                          {new Date(
+                            submission.submissionDate
+                          ).toLocaleDateString("id-ID", {
                             day: "numeric",
                             month: "long",
                             year: "numeric",
@@ -142,7 +181,8 @@ export default function CheckStatusPage() {
                     <XCircle className="h-4 w-4" />
                     <AlertTitle>Data Tidak Ditemukan</AlertTitle>
                     <AlertDescription>
-                      Nomor referensi tidak valid atau data pengajuan tidak ditemukan.
+                      Nomor referensi tidak valid atau data pengajuan tidak
+                      ditemukan.
                     </AlertDescription>
                   </Alert>
                 )}
@@ -168,5 +208,5 @@ export default function CheckStatusPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
