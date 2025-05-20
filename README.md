@@ -72,15 +72,17 @@ API Test Result for All Endpoint
 ## Coverage Test
 
 ![Coverage Test Result for Front-end]()
+Unit Test Frontend
+![Unit Test FE](https://github.com/user-attachments/assets/1349bd7f-71ec-4448-ad13-741559a4058f)
 
 Coverage Test untuk Frontend
-
-![Unit Test BE](./img/BE-UnitTest.png)
+![Coverage Test FE](https://github.com/user-attachments/assets/430fa42e-9e41-4529-8c11-a4d76f954b1d)
 
 Unit Test Backend
-![Coverage Test BE](./img/BE-CoverageTest.png)
+![Unit Test BE](./img/BE-UnitTest.png)
 
 Coverage Test Backend
+![Coverage Test BE](./img/BE-CoverageTest.png)
 
 For run Test, create babel.config.js:
 module.exports = {
