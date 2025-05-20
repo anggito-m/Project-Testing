@@ -33,7 +33,7 @@ export default function CheckStatusPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleCheck = () => {
+  /*const handleCheck = () => {
     if (!referenceNumber.trim()) {
       setError("Nomor referensi harus diisi");
       return;
@@ -69,10 +69,10 @@ export default function CheckStatusPage() {
           description: "Tidak ada data pengajuan yang tersimpan.",
         });
       }
-      setSearched(true);
-      setLoading(false);
-    }, 800);
-  };
+      setSearched(true)
+      setLoading(false)
+    }, 800)
+  }
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -139,17 +139,11 @@ export default function CheckStatusPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-muted-foreground">
-                          Nomor Referensi
-                        </p>
-                        <p className="font-medium">
-                          {submission.referenceNumber}
-                        </p>
+                        <p className="text-sm text-muted-foreground">Nomor Referensi</p>
+                        <p className="font-medium">{submission.referenceNumber}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">
-                          Jenis Pajak
-                        </p>
+                        <p className="text-sm text-muted-foreground">Jenis Pajak</p>
                         <p className="font-medium">{submission.taxType}</p>
                       </div>
                       <div>
@@ -165,9 +159,7 @@ export default function CheckStatusPage() {
                           Tanggal Pengajuan
                         </p>
                         <p className="font-medium">
-                          {new Date(
-                            submission.submissionDate
-                          ).toLocaleDateString("id-ID", {
+                          {new Date(submission.submissionDate).toLocaleDateString("id-ID", {
                             day: "numeric",
                             month: "long",
                             year: "numeric",
