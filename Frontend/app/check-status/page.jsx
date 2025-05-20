@@ -242,7 +242,7 @@ export default function CheckStatusPage() {
             </Button>
             {submission && (
               <Button asChild className="w-full sm:w-auto">
-                <Link href={`/confirmation?ref=${submission.referenceNumber}`}>
+                <Link href={`/confirmation?ref=${submission.reference_number}`}>
                   Lihat Detail
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
