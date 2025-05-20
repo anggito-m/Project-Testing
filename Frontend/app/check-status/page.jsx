@@ -1,5 +1,5 @@
 "use client";
-import React from "react"; // Add this at the top
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +35,44 @@ export default function CheckStatusPage() {
 
   /*const handleCheck = () => {
     if (!referenceNumber.trim()) {
+      setError("Nomor referensi harus diisi")
+      return
+    }
+
+    setError("")
+    setLoading(true)
+
+    // Simulate network delay
+    setTimeout(() => {
+      // Get submission data from localStorage
+      const existingData = localStorage.getItem("taxSubmissions")
+      if (existingData) {
+        const submissions = JSON.parse(existingData)
+        const found = submissions.find((s) => s.referenceNumber === referenceNumber)
+        if (found) {
+          setSubmission(found)
+          toast.success("Data ditemukan", {
+            description: `Pengajuan dengan nomor ${referenceNumber} berhasil ditemukan.`,
+          })
+        } else {
+          setSubmission(null)
+          toast.error("Data tidak ditemukan", {
+            description: "Nomor referensi tidak valid atau data pengajuan tidak ditemukan.",
+          })
+        }
+      } else {
+        setSubmission(null)
+        toast.error("Data tidak ditemukan", {
+          description: "Tidak ada data pengajuan yang tersimpan.",
+        })
+      }
+      setSearched(true)
+      setLoading(false)
+    }, 800)
+  }*/
+
+  const handleCheck = () => {
+    if (!referenceNumber.trim()) {
       setError("Nomor referensi harus diisi");
       return;
     }
@@ -42,37 +80,42 @@ export default function CheckStatusPage() {
     setError("");
     setLoading(true);
 
-    // Simulate network delay
-    setTimeout(() => {
-      // Get submission data from localStorage
-      const existingData = localStorage.getItem("taxSubmissions");
-      if (existingData) {
-        const submissions = JSON.parse(existingData);
-        const found = submissions.find(
-          (s) => s.referenceNumber === referenceNumber
+    const fetchSubmission = async () => {
+      try {
+        setLoading(true);
+
+        const response = await fetch(
+          `http://localhost:5000/api/submission/${referenceNumber}`
         );
-        if (found) {
-          setSubmission(found);
-          toast.success("Data ditemukan", {
-            description: `Pengajuan dengan nomor ${referenceNumber} berhasil ditemukan.`,
-          });
-        } else {
-          setSubmission(null);
-          toast.error("Data tidak ditemukan", {
-            description:
-              "Nomor referensi tidak valid atau data pengajuan tidak ditemukan.",
-          });
+        console.log(referenceNumber);
+        if (!response.ok) {
+          throw new Error("Submission not found");
         }
-      } else {
-        setSubmission(null);
-        toast.error("Data tidak ditemukan", {
-          description: "Tidak ada data pengajuan yang tersimpan.",
+
+        const data = await response.json();
+        setSubmission(data); // asumsi response sudah dalam format JSON submission
+        toast.success("Data ditemukan", {
+          description: `Pengajuan dengan nomor ${referenceNumber} berhasil ditemukan.`,
         });
+        console.log(data);
+      } catch (error) {
+        toast.error("Data tidak ditemukan", {
+          description:
+            "Nomor referensi tidak valid atau data pengajuan tidak ditemukan.",
+        });
+      } finally {
+        setSearched(true);
+        setLoading(false);
       }
-      setSearched(true)
-      setLoading(false)
-    }, 800)
-  }
+    };
+
+    // Simulasi delay seperti sebelumnya
+    const timer = setTimeout(() => {
+      fetchSubmission();
+    }, 800);
+
+    return () => clearTimeout(timer);
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -139,12 +182,18 @@ export default function CheckStatusPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-muted-foreground">Nomor Referensi</p>
-                        <p className="font-medium">{submission.referenceNumber}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Nomor Referensi
+                        </p>
+                        <p className="font-medium">
+                          {submission.reference_number}
+                        </p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Jenis Pajak</p>
-                        <p className="font-medium">{submission.taxType}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Jenis Pajak
+                        </p>
+                        <p className="font-medium">{submission.tax_type}</p>
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">
@@ -159,11 +208,14 @@ export default function CheckStatusPage() {
                           Tanggal Pengajuan
                         </p>
                         <p className="font-medium">
-                          {new Date(submission.submissionDate).toLocaleDateString("id-ID", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
+                          {new Date(submission.submitted_at).toLocaleDateString(
+                            "id-ID",
+                            {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            }
+                          )}
                         </p>
                       </div>
                     </div>
