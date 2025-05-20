@@ -62,7 +62,7 @@
 
 ## API Test
 
-![API Test Result for All Endpoint]()
+![API Test Result for All Endpoint](./img/Postman-APITesting.png)
 
 API Test Result for All Endpoint
 
