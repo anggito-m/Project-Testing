@@ -85,6 +85,7 @@ Coverage Test Backend
 ![Coverage Test BE](./img/BE-CoverageTest.png)
 
 For run Test, create babel.config.js:
+```
 module.exports = {
 presets: [
 ["@babel/preset-env", { targets: { node: "current" } }],
@@ -92,3 +93,4 @@ presets: [
 "@babel/preset-typescript",
 ],
 };
+```
