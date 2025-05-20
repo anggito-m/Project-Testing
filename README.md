@@ -26,6 +26,8 @@
 | UR9 | Penyimpanan Data Aman          | Data pengajuan pengguna harus tersimpan di database agar tidak hilang saat halaman di-refresh atau ditutup                               |
 ---
 
+## ✍ Feature Analysis
+
 | **Fitur**                  | **Deskripsi**                                                                                  | **Terkait User Requirement** |
 | -------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------- |
 | Halaman Formulir Pajak     | Halaman utama yang berisi formulir pengajuan pajak                                             | UR1                          |
@@ -38,9 +40,10 @@
 | Halaman Cek Status         | Memungkinkan pengguna mencari status pengajuan berdasarkan nomor referensi                     | UR7                          |
 | Validasi Nomor Referensi   | Sistem memverifikasi apakah nomor referensi valid saat pengecekan                              | UR8                          |
 | Database Persisten         | Sistem menggunakan database agar data tetap tersimpan meskipun halaman di-refresh atau ditutup | UR9                          |
+---
 
 
-## 🧪 End-to-End Testing (Acceptance Test)
+## 📝 End-to-End Testing (Acceptance Test)
 
 | **No** | **Test Case**                    | **Langkah**                                                                                                                      | **Expected Result**                                                                                      | **Terkait**             |
 | ------ | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------- |
@@ -71,6 +74,10 @@ API Test Result for All Endpoint
 
 Coverage Test untuk Frontend
 
-![Coverage Test Result Back-end]()
+![Unit Test BE](./img/BE-UnitTest.png)
 
-Coverage Test untuk Backend
+Unit Test Backend
+
+![Coverage Test BE](./img/BE-CoverageTest.png)
+
+Coverage Test Backend
